@@ -3,13 +3,29 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hinder/firebase_options.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => MyAppState(),
+      child: const MyApp(),
+    ),
+  );
+}
+
+class MyAppState extends ChangeNotifier {
+  // ignore: unused_field
+  int _selectedIndex = 0;
+
+  setSelectedIndex(int value) {
+    _selectedIndex = value;
+    notifyListeners();
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -17,15 +33,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Hinder',
-      theme: ThemeData(
-        colorScheme:
-            ColorScheme.fromSeed(seedColor: Color.fromARGB(0, 139, 171, 110)),
-        useMaterial3: true,
-      ),
-      home: MyHomePage(),
-    );
+    return ChangeNotifierProvider(
+        create: (context) => MyAppState(),
+        child: MaterialApp(
+          title: 'Hinder',
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(
+                seedColor: const Color.fromARGB(0, 139, 171, 110)),
+            useMaterial3: true,
+          ),
+          home: MyHomePage(),
+        ));
   }
 }
 
@@ -34,10 +52,11 @@ class MyHomePage extends StatelessWidget {
   MyHomePage({super.key});
 
   final title = 'Hinder';
-  var selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
+    var appState = context.watch<MyAppState>();
+    var selectedIndex = appState._selectedIndex;
     Widget page;
     switch (selectedIndex) {
       case 0:
@@ -79,6 +98,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
+    var appState = context.watch<MyAppState>();
+
     return Center(
       child: Column(
         children: [
@@ -100,7 +121,7 @@ class _HomePageState extends State<HomePage> {
             width: 325,
             child: ElevatedButton(
               onPressed: () {
-                selectedIndex = 1;
+                appState.setSelectedIndex(1);
               },
               child: const Text(
                 'Create Account',
