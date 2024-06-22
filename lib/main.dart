@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:hinder/auth_gate.dart';
 import 'package:hinder/firebase_options.dart';
 
 void main() async {
@@ -40,7 +41,7 @@ class MyHomePage extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(title),
       ),
-      body: HomePage(),
+      body: AuthGate(),
     );
   }
 }
