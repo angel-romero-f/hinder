@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1003582181042",
+    "project_id": "rally-e4335",
+    "storage_bucket": "rally-e4335.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1003582181042:android:824ceb1b855a6fe3bf43ab",
+        "android_client_info": {
+          "package_name": "rally.hackathon.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvJp8xtz2-eG5VMmk2dUaI7sQCD-jBbTk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
