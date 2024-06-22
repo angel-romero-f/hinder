@@ -78,6 +78,11 @@ class MyHomePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       appBar: AppBar(
+        leading: BackButton(
+          onPressed: () {
+            appState.setSelectedIndex(0);            
+          }
+        ),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(title),
       ),
