@@ -1,11 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:hinder/auth_gate.dart';
 import 'package:hinder/firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(  
+  await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(const MyApp());
@@ -23,34 +24,59 @@ class MyApp extends StatelessWidget {
             ColorScheme.fromSeed(seedColor: Color.fromARGB(0, 139, 171, 110)),
         useMaterial3: true,
       ),
-      home: const MyHomePage(),
+      home: MyHomePage(),
     );
   }
 }
 
+// ignore: must_be_immutable
 class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key});
+  MyHomePage({super.key});
 
   final title = 'Hinder';
+  var selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
+    Widget page;
+    switch (selectedIndex) {
+      case 0:
+        page = HomePage();
+        break;
+      case 1:
+        page = SignInScreen(
+          providers: [
+            EmailAuthProvider(),
+          ],
+        );
+        break;
+      case 2:
+        page = const Placeholder();
+        break;
+      default:
+        page = const HomePage();
+    }
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(title),
       ),
-      body: AuthGate(),
+      body: page,
     );
   }
 }
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({
     super.key,
   });
 
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -74,7 +100,7 @@ class HomePage extends StatelessWidget {
             width: 325,
             child: ElevatedButton(
               onPressed: () {
-                debugPrint('Create Account pressed');
+                selectedIndex = 1;
               },
               child: const Text(
                 'Create Account',
