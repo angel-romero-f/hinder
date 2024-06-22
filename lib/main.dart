@@ -36,15 +36,26 @@ class MyHomePage extends StatelessWidget {
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment:
-              MainAxisAlignment.end, // Aligns children to the bottom
           children: [
+            // Text at the top
+            const Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Text(
+                'Find your next pickleball match or life-long friend.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 24.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            const Spacer(), // Pushes the buttons to the bottom
             SizedBox(
               height: 50,
               width: 325,
               child: ElevatedButton(
                 onPressed: () {
-                  debugPrint('hello');
+                  debugPrint('Create Account pressed');
                 },
                 child: const Text(
                   'Create Account',
@@ -62,7 +73,7 @@ class MyHomePage extends StatelessWidget {
               width: 325,
               child: ElevatedButton(
                 onPressed: () {
-                  debugPrint('hello');
+                  debugPrint('Sign in pressed');
                 },
                 child: const Text(
                   'Sign in',
@@ -74,7 +85,7 @@ class MyHomePage extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 75), // Add some spacing at the bottom
+            const SizedBox(height: 60), // Add some spacing at the bottom
           ],
         ),
       ),
