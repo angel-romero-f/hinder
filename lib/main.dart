@@ -124,25 +124,7 @@ class _HomePageState extends State<HomePage> {
                 appState.setSelectedIndex(1);
               },
               child: const Text(
-                'Create Account',
-                style: TextStyle(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 13), // Add padding between the buttons
-          SizedBox(
-            height: 50,
-            width: 325,
-            child: ElevatedButton(
-              onPressed: () {
-                debugPrint('Sign in pressed');
-              },
-              child: const Text(
-                'Sign in',
+                'Create Account/Sign in',
                 style: TextStyle(
                   fontSize: 20.0,
                   fontWeight: FontWeight.bold,
