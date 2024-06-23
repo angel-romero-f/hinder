@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:hinder/main.dart';
+import 'package:hinder/widgets/feed.dart';
 import 'package:hinder/widgets/profile_info.dart';
+import 'package:hinder/widgets/user_card.dart';
 import 'package:provider/provider.dart';
 
 class TabBarApp extends StatelessWidget {
@@ -34,14 +35,17 @@ class TabBarApp extends StatelessWidget {
                   color: Colors.orange,
                   child: const Icon(Icons.home),
                 ),
-                Container(
-                  color: Colors.orange,
-                  child: const Icon(Icons.home),
+                Feed(
+                  userCards: [
+                    UserCard(
+                      name: "Edgar",
+                      skillLevel: "Intermediate",
+                      gender: "Male",
+                    )
+                  ],
                 ),
                 ProfileInfo()
               ],
             )));
   }
 }
-
-
