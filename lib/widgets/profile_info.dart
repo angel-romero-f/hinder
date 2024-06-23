@@ -131,6 +131,8 @@ class _ProfileInfoState extends State<ProfileInfo> {
                         skill: _skill,
                         email: _email,
                       ));
+                      var appState = context.read<MyAppState>();
+                      appState.setSelectedIndex(3);
                     }
                   },
                   child: const Text('Save'),

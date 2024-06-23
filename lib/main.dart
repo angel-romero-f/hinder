@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'package:hinder/widgets/profile_info.dart'; // Ensure this import is correct
+import 'package:hinder/widgets/Welcome.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -74,6 +75,8 @@ class MyHomePage extends StatelessWidget {
       case 2:
         page = ProfileInfo();
         break;
+      case 3:
+        page = TabBarApp();
       default:
         page = const HomePage();
     }
