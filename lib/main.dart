@@ -2,14 +2,16 @@ import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:hinder/firebase_options.dart';
 import 'package:provider/provider.dart';
+import 'firebase_options.dart';
+import 'package:hinder/widgets/profile_info.dart'; // Ensure this import is correct
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
   runApp(
     ChangeNotifierProvider(
       create: (context) => MyAppState(),
@@ -19,12 +21,18 @@ void main() async {
 }
 
 class MyAppState extends ChangeNotifier {
-  // ignore: unused_field
   int _selectedIndex = 0;
 
-  setSelectedIndex(int value) {
+  int get selectedIndex => _selectedIndex;
+
+  void setSelectedIndex(int value) {
     _selectedIndex = value;
     notifyListeners();
+  }
+
+  Future<void> signOut() async {
+    await FirebaseAuth.instance.signOut();
+    setSelectedIndex(0);
   }
 }
 
@@ -33,21 +41,19 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-        create: (context) => MyAppState(),
-        child: MaterialApp(
-          title: 'Hinder',
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(
-                seedColor: const Color.fromARGB(0, 139, 171, 110)),
-            useMaterial3: true,
-          ),
-          home: MyHomePage(),
-        ));
+    return MaterialApp(
+      title: 'Hinder',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color.fromARGB(0, 139, 171, 110),
+        ),
+        useMaterial3: true,
+      ),
+      home: MyHomePage(),
+    );
   }
 }
 
-// ignore: must_be_immutable
 class MyHomePage extends StatelessWidget {
   MyHomePage({super.key});
 
@@ -56,21 +62,17 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
-    var selectedIndex = appState._selectedIndex;
+    var selectedIndex = appState.selectedIndex;
     Widget page;
     switch (selectedIndex) {
       case 0:
         page = HomePage();
         break;
       case 1:
-        page = SignInScreen(
-          providers: [
-            EmailAuthProvider(),
-          ],
-        );
+        page = AuthWrapper();
         break;
       case 2:
-        page = const Placeholder();
+        page = ProfileInfo();
         break;
       default:
         page = const HomePage();
@@ -78,13 +80,23 @@ class MyHomePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       appBar: AppBar(
-        leading: BackButton(
-          onPressed: () {
-            appState.setSelectedIndex(0);            
-          }
-        ),
+        leading: selectedIndex != 0
+            ? BackButton(onPressed: () {
+                appState.setSelectedIndex(0);
+              })
+            : null,
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(title),
+        actions: selectedIndex == 2
+            ? [
+                IconButton(
+                  icon: Icon(Icons.logout),
+                  onPressed: () async {
+                    await appState.signOut();
+                  },
+                ),
+              ]
+            : null,
       ),
       body: page,
     );
@@ -107,10 +119,11 @@ class _HomePageState extends State<HomePage> {
 
     return Center(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           // Text at the top
           const Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: EdgeInsets.all(20.0),
             child: Text(
               'From your next pickleball match or life-long friend.',
               textAlign: TextAlign.center,
@@ -141,6 +154,41 @@ class _HomePageState extends State<HomePage> {
           const SizedBox(height: 60), // Add some spacing at the bottom
         ],
       ),
+    );
+  }
+}
+
+class AuthWrapper extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    var appState = context.read<MyAppState>();
+
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasData && snapshot.data != null) {
+          // User is signed in
+          print('User is signed in: ${snapshot.data?.email}');
+          Future.microtask(() => appState.setSelectedIndex(2));
+          return const SizedBox.shrink();
+        } else {
+          // User is not signed in
+          print('User is not signed in');
+          return SignInScreen(
+            providers: [
+              EmailAuthProvider(),
+            ],
+            actions: [
+              AuthStateChangeAction<SignedIn>((context, state) {
+                print('User has signed in');
+                appState.setSelectedIndex(2);
+              }),
+            ],
+          );
+        }
+      },
     );
   }
 }
